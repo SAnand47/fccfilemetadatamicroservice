@@ -13,6 +13,14 @@ app.use(express.static(process.cwd() +'/uploads'));
 
 app.get("/", function(req, res) {
  
+  fs.readdir("uploads", (err, files) => {
+    if (err) return res.send("error in reading files");
+    for (let file of files) {
+      fs.unlink("uploads/" + file, err => {
+        if (err) return res.send("error in removing files");
+      });
+    }
+  });
  
   //-- get the homepage
   return res.sendFile(process.cwd() + "/views/index.html");
@@ -45,3 +53,4 @@ app.post("/api/fileanalyse", function(req, res) {
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
+
